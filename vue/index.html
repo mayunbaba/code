@@ -9,7 +9,23 @@
 <body>
   <script src="./dist/umd/vue.js"></script>
   <script>
-    console.log(Vue)
+    let vm = new Vue({
+      el: '#app',
+      data() {
+        return {
+          a: {
+            a: {
+              a: 1
+            }
+          }
+        }
+      },
+      template: ''
+    })
+    // 递归调用defineProperty进行拦截，性能差 -> proxy
+    // console.log(vm._data.a.a)
+    vm._data.a = {b:1}
+    // vm._data.a.b = 100
   </script>
 </body>
 </html>
