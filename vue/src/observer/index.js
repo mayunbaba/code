@@ -31,7 +31,7 @@ function defineReactive(data, key, value) {
 
 export function observe(data) {
   // typeof null 也是object
-  // 不是对象的判断
+  // 不是对象的判断 null === null true
   if (typeof data !== 'object' || data === null) {
     return
   }
