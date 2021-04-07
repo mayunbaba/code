@@ -49,12 +49,12 @@
       <tr>
         <th>指数名称</th>
         <th>指数类型</th>
-        <th>pe</th>
+        <th @click="sortData('pe')">pe→</th>
         <th>pe百分位</th>
         <th>pb</th>
         <th>pb百分位</th>
         <th>roe（净资产收益率）</th>
-        <th>预测PEG（市盈率相对盈利增长比率）</th>
+        <th @click="sortData('peg')">预测PEG（市盈率相对盈利增长比率）→</th>
         <th>指数温度</th>
         <th>基金代码</th>
       </tr>
@@ -79,14 +79,14 @@
       数据来源：<a href="https://danjuanfunds.com/djmodule/value-center">https://danjuanfunds.com/djmodule/value-center</a>
     </h5>
   </div>
-  <script src="./xueqiuData.js"></script>
   <script src="https://cdn.bootcss.com/vue/2.5.2/vue.min.js"></script>
+  <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
   <script>
     new Vue({
       el: "#app",
       data() {
         return {
-          data: allData.data.items,
+          data: [],
           pageData: [],
           ttype: '0',
           ttypeArr: {
@@ -139,13 +139,15 @@
         },
       },
       created() {
-        this.data.map(item => {
-          item.temp = (item.pe_percentile + item.pb_percentile) / 2
-          return item.fundCode = this.fundArr[item.name] || ''
+        $.ajax({ url: "https://danjuanfunds.com/djapi/index_eva/dj" }).then(res => {
+          this.data = res.data.items
+          this.data.map(item => {
+            item.temp = (item.pe_percentile + item.pb_percentile) / 2
+            return item.fundCode = this.fundArr[item.name] || ''
+          })
+          this.data = this.sortByKey(this.data, 'temp')
+          this.pageData = [...this.data]
         })
-
-        this.data = this.sortByKey(this.data, 'temp')
-        this.pageData = [...this.data]
       },
       methods: {
         changeType() {
@@ -174,13 +176,12 @@
           return array.sort((a, b) => {
             const x = this.getObjectValue(a, key)
             const y = this.getObjectValue(b, key)
-            if (subKey) {
-              const c = this.getObjectValue(a, subKey)
-              const d = this.getObjectValue(b, subKey)
-            }
-            return x < y ? -1 : x > y ? 1 : c < d ? -1 : c > d ? 1 : 0
+            return x < y ? -1 : x > y ? 1 : 0
           })
         },
+        sortData(key) {
+          this.pageData = this.sortByKey(this.pageData, key)
+        }
       },
     })
   </script>
