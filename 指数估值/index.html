@@ -139,7 +139,9 @@
         },
       },
       created() {
-        $.ajax({ url: "https://danjuanfunds.com/djapi/index_eva/dj" }).then(res => {
+        $.ajax({
+          url: "https://danjuanfunds.com/djapi/index_eva/dj"
+        }).then(res => {
           this.data = res.data.items
           this.data.map(item => {
             item.temp = (item.pe_percentile + item.pb_percentile) / 2
