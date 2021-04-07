@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>指数估值</title>
+  <style>
+    table {
+      text-align: center;
+    }
+
+    th,
+    td {
+      border: 1px solid #000;
+    }
+
+    .green {
+      background: green;
+    }
+
+    .orange {
+      background-color: orange;
+    }
+
+    .red {
+      background-color: red;
+    }
+
+    select {
+      height: 24px;
+    }
+
+    h1 {
+      font-size: 50px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <h3>{{pageData[0].date}}雪球指数表</h3>
+    <select v-model="ttype" @change="changeType">
+      <option v-for="(item,index) in ttypeArr" :value="item.value">{{item.text}}</option>
+    </select>
+    <button @click="filSelData">只展示个人投资数据</button>
+    <table>
+      <tr>
+        <th>指数名称</th>
+        <th>指数类型</th>
+        <th>pe</th>
+        <th>pe百分位</th>
+        <th>pb</th>
+        <th>pb百分位</th>
+        <th>roe（净资产收益率）</th>
+        <th>预测PEG（市盈率相对盈利增长比率）</th>
+        <th>指数温度</th>
+        <th>基金代码</th>
+      </tr>
+      <tr v-for="(item,index) in pageData" :class="{
+        'green': item.eva_type === 'low',
+        'orange': item.eva_type === 'mid',
+        'red': item.eva_type === 'high',
+      }">
+        <td>{{item.name}}</td>
+        <td>{{ttypeArr[item.ttype].text}}</td>
+        <td>{{item.pe}}</td>
+        <td>{{item.pe_percentile | percent}}</td>
+        <td>{{item.pb}}</td>
+        <td>{{item.pb_percentile | percent}}</td>
+        <td>{{item.roe | percent}}</td>
+        <td>{{item.peg}}</td>
+        <td>{{item.temp | temperature}}</td>
+        <td>{{item.fundCode}}</td>
+      </tr>
+    </table>
+    <h5>
+      数据来源：<a href="https://danjuanfunds.com/djmodule/value-center">https://danjuanfunds.com/djmodule/value-center</a>
+    </h5>
+  </div>
+  <script src="./xueqiuData.js"></script>
+  <script src="https://cdn.bootcss.com/vue/2.5.2/vue.min.js"></script>
+  <script>
+    new Vue({
+      el: "#app",
+      data() {
+        return {
+          data: allData.data.items,
+          pageData: [],
+          ttype: '0',
+          ttypeArr: {
+            '0': {
+              text: '全部指数',
+              value: '0'
+            },
+            '1': {
+              text: '宽基指数',
+              value: '1'
+            },
+            '2': {
+              text: '策略指数',
+              value: '2'
+            },
+            '3': {
+              text: '行业指数',
+              value: '3'
+            },
+          },
+          fundArr: {
+            '中证500': '510500',
+            '上证50': '510050',
+            '沪深300': '510300',
+            '创业板': '159915',
+            '上证红利': '510880',
+            '中证红利': '515080',
+          }
+        }
+      },
+      // 中证500	510500
+      // 上证50	510050
+      // 沪深300	510300
+      // 中证全指	
+      // 创业板指	159915
+      // 上证红利指数(波动大)	510880
+      // 中证红利(波动大)	100032（场外基金），场内515080
+      // 恒生指数(不建议)	159920
+      // 国企指数(中国在香港上市公司)	510900
+      filters: {
+        percent: (val) => {
+          if (!val) return ''
+          const value = `${(val * 100).toFixed(2)}%`
+          return value
+        },
+        temperature: (val) => {
+          if (!val) return ''
+          const value = `${(val * 100).toFixed(2)}℃`
+          return value
+        },
+      },
+      created() {
+        this.data.map(item => {
+          item.temp = (item.pe_percentile + item.pb_percentile) / 2
+          return item.fundCode = this.fundArr[item.name] || ''
+        })
+
+        this.data = this.sortByKey(this.data, 'temp')
+        this.pageData = [...this.data]
+      },
+      methods: {
+        changeType() {
+          if (this.ttype === '0') {
+            this.pageData = this.data
+            return
+          }
+          this.pageData = this.data.filter(item => {
+            return item.ttype == this.ttype
+          })
+        },
+        filSelData() {
+          this.pageData = this.data.filter(item => {
+            return item.fundCode
+          })
+        },
+        getObjectValue(obj, key) {
+          const keys = key.split('.')
+          let newObj = obj
+          keys.forEach((item) => {
+            newObj = newObj[item]
+          })
+          return newObj
+        },
+        sortByKey(array, key, subKey) {
+          return array.sort((a, b) => {
+            const x = this.getObjectValue(a, key)
+            const y = this.getObjectValue(b, key)
+            if (subKey) {
+              const c = this.getObjectValue(a, subKey)
+              const d = this.getObjectValue(b, subKey)
+            }
+            return x < y ? -1 : x > y ? 1 : c < d ? -1 : c > d ? 1 : 0
+          })
+        },
+      },
+    })
+  </script>
+</body>
+
+</html>
