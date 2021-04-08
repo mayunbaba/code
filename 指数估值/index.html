@@ -45,6 +45,7 @@
       <option v-for="(item,index) in ttypeArr" :value="item.value">{{item.text}}</option>
     </select>
     <button @click="filSelData">只展示个人投资数据</button>
+    投资金额<input v-model="price" @blur="computedPrice" type="number"/>
     <table>
       <tr>
         <th>指数名称</th>
@@ -55,7 +56,8 @@
         <th>pb百分位</th>
         <th>roe（净资产收益率）</th>
         <th @click="sortData('peg')">预测PEG（市盈率相对盈利增长比率）→</th>
-        <th>指数温度</th>
+        <th @click="sortData('temp')">指数温度→</th>
+        <th>买入价格</th>
         <th>基金代码</th>
       </tr>
       <tr v-for="(item,index) in pageData" :class="{
@@ -72,6 +74,7 @@
         <td>{{item.roe | percent}}</td>
         <td>{{item.peg}}</td>
         <td>{{item.temp | temperature}}</td>
+        <td>{{item.price}}</td>
         <td>{{item.fundCode}}</td>
       </tr>
     </table>
@@ -89,6 +92,7 @@
           data: [],
           pageData: [],
           ttype: '0',
+          price: 17466,
           ttypeArr: {
             '0': {
               text: '全部指数',
@@ -134,7 +138,7 @@
         },
         temperature: (val) => {
           if (!val) return ''
-          const value = `${(val * 100).toFixed(2)}℃`
+          const value = `${val.toFixed(2)}℃`
           return value
         },
       },
@@ -144,9 +148,10 @@
         }).then(res => {
           this.data = res.data.items
           this.data.map(item => {
-            item.temp = (item.pe_percentile + item.pb_percentile) / 2
+            item.temp = (item.pe_percentile + item.pb_percentile) / 2 * 100
             return item.fundCode = this.fundArr[item.name] || ''
           })
+          this.computedPrice()
           this.data = this.sortByKey(this.data, 'temp')
           this.pageData = [...this.data]
         })
@@ -183,6 +188,28 @@
         },
         sortData(key) {
           this.pageData = this.sortByKey(this.pageData, key)
+        },
+        computedPrice() {
+          this.data.map(item => {
+            if(item.temp > 50) {
+              item.price = '清仓'
+            } else if (item.temp > 40) {
+              item.price = '卖出50%'
+            } else if (item.temp > 30) {
+              item.price = '等待上涨'
+            } else if (item.temp > 25) {
+              item.price = (this.price * 0.5).toFixed(0)
+            } else if (item.temp > 20) {
+              item.price = (this.price * 0.6).toFixed(0)
+            } else if (item.temp > 10) {
+              item.price = (this.price * 0.8).toFixed(0)
+            } else {
+              item.price = this.price
+            }
+            return item.fundCode = this.fundArr[item.name] || ''
+          })
+          this.data = this.sortByKey(this.data, 'temp')
+          this.pageData = [...this.data]
         }
       },
     })
