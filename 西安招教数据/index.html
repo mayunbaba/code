@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>西安招教数据</title>
+  <style>
+    table {
+      text-align: center;
+    }
+
+    th,
+    td {
+      border: 1px solid #000;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <button @click="filterData('信息')">信息</button>
+    <button @click="filterData('英语')">英语</button>
+    <button @click="filterData('数学')">数学</button>
+    <button @click="filterData('语文')">语文</button>
+    <button @click="filterData('物理')">物理</button>
+    <table>
+      <tr>
+        <td>总数</td>
+        <td></td>
+        <td>{{totalData.JobCount}}</td>
+        <td>{{totalData.jobsum}}</td>
+        <td></td>
+        <td>{{totalData.jobsum / totalData.JobCount}}</td>
+      </tr>
+      <tr>
+        <td>当前科目</td>
+        <td></td>
+        <td>{{subjectData.JobCount}}</td>
+        <td>{{subjectData.jobsum}}</td>
+        <td></td>
+        <td>{{subjectData.jobsum / subjectData.JobCount}}</td>
+      </tr>
+      <tr>
+        <th>序号</th>
+        <th>学校名称</th>
+        <th>招聘人数</th>
+        <th>报名人数</th>
+        <th>职位名称</th>
+        <th>竞争压力</th>
+      </tr>
+      <tr v-for="(item,index) in pageData">
+        <td>{{index+1}}</td>
+        <td>{{item.DisplayName}}</td>
+        <td>{{item.JobCount}}</td>
+        <td>{{item.jobsum}}</td>
+        <td>{{item.JobName}}</td>
+        <td>{{item.jobsum / item.JobCount}}</td>
+
+      </tr>
+      
+    </table>
+  </div>
+  <script src="https://cdn.bootcss.com/vue/2.5.2/vue.min.js"></script>
+  <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+  <script>
+    new Vue({
+      el: "#app",
+      data() {
+        return {
+          pageData: [],
+          resData:[],
+          totalData: {
+            JobCount: 0,
+            jobsum: 0
+          },
+          subjectData: {}
+        }
+      },
+      created() {
+        $.ajax({
+          url: "http://gxjszp.haorc.com/api/StuBase/U_Jobs?page=1&rows=400&DisplayName="
+        }).then(res => {
+          this.resData = res.rows
+          this.pageData = this.resData.sort((a, b) => {
+            const x = a.jobsum / a.JobCount
+            const y = b.jobsum / b.JobCount
+            return x - y
+          })
+          const totalData = {
+            JobCount: 0,
+            jobsum: 0
+          }
+          this.resData.forEach((item, index) => {
+            totalData.JobCount = totalData.JobCount + item.JobCount
+            totalData.jobsum = totalData.jobsum + item.jobsum
+          })
+          this.totalData = totalData
+        })
+      },
+      methods: {
+        filterData(arg) {
+          this.pageData = this.resData.filter(item => item.JobName.includes(arg))
+          const totalData = {
+            JobCount: 0,
+            jobsum: 0
+          }
+          this.pageData.forEach((item, index) => {
+            totalData.JobCount = totalData.JobCount + item.JobCount
+            totalData.jobsum = totalData.jobsum + item.jobsum
+          })
+          this.subjectData = totalData
+        }
+      }
+    })
+  </script>
+</body>
+
+</html>
