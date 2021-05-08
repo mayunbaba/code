@@ -6,6 +6,7 @@ let oldArrayProtoMethods = Array.prototype
 // Object.create 一个新对象，带着指定的原型对象和属性
 export let arrayMethods = Object.create(oldArrayProtoMethods)
 
+// 这些方法会改变原数组
 let methods = [
   'push',
   'pop',
@@ -19,9 +20,9 @@ let methods = [
 methods.forEach(method => {
   arrayMethods[method] = function(...args) { //this就是observer的value
     console.log('数组方法被调用', '更新视图')
-    const result = oldArrayProtoMethods[method].apply(this, arguments)
-    let inserted
-    let ob  = this.__ob__
+    const result = oldArrayProtoMethods[method].call(this, ...args)
+    let inserted // 数组方法修改的变量 push(1,2,3)
+    let ob  = this.__ob__ // 根据当前数组获取到observer实例
     switch (method) {
       case 'push':
       case 'unshift': //这两个方法都是追加 追加的内容可能是对象类型，应该被再次劫持
