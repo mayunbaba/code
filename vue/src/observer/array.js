@@ -33,6 +33,7 @@ methods.forEach(method => {
       default:
         break;
     }
+    // 更新视图
     if (inserted) ob.observeArray(inserted) // 给数组新增的也要观测
     return result
   }

@@ -49,6 +49,7 @@ function defineReactive(data, key, value) {
     set(newValue) {
       console.log('用户设置了值', data, key, value)
       if (newValue === value) return
+      // 更新视图
       observe(newValue) // 如果用户赋值一个新对象，需要将这个对象进行劫持
       value = newValue
     }
