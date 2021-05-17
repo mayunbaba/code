@@ -7,12 +7,12 @@ const xlsx = require('node-xlsx')
 let page = '1'
 const totalPage = '3'
 // 积极增值
-// const url = 'https://danjuanfunds.com/djapi/fundx/portfolio/v3/plan/united/page?tab=4&size=20&default_order=1&invest_strategy=&type=&manager_type=1&yield_between=-12~50%E4%BB%A5%E4%B8%8A&mz_between=1~34&page='
+const url = 'https://danjuanfunds.com/djapi/fundx/portfolio/v3/plan/united/page?tab=4&size=20&default_order=1&invest_strategy=&type=&manager_type=1&yield_between=-12~50%E4%BB%A5%E4%B8%8A&mz_between=1~34&page='
 // 稳健理财
-const url = 'https://danjuanfunds.com/djapi/fundx/portfolio/v3/plan/united/page?tab=2&size=20&default_order=0&invest_strategy=&type=&manager_type=&yield_between=&mz_between=&page='
+// const url = 'https://danjuanfunds.com/djapi/fundx/portfolio/v3/plan/united/page?tab=2&size=20&default_order=0&invest_strategy=&type=&manager_type=&yield_between=&mz_between=&page='
 const subUrl = 'https://danjuanfunds.com/djapi/plan/'
 const subUrl2 = 'https://danjuanfunds.com/djapi/plan/nav/indicator?plan_code='
-const name = '稳健理财'
+const name = '积极增值'
 let allData = []
 const dataDict = {
   plan_name: '组合名称',
@@ -29,8 +29,9 @@ const dataDict = {
   // found_date: '成立日期',
   invest_time_name: '建议',
   found_days: '成立天数',
-  plan_derived: '近期数据',
-  sharpe: '夏普比例'
+  // plan_derived: '近期数据',
+  sharpe: '夏普比例',
+  max_drawdown: '最大回撤'
 }
 
 getAllData()
