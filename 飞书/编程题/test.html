@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    const arr = [1, 2, 3, 4, [100, 200, 3000, [1, 2, 4, [1, 2, 5]]], 5, "string", { name: "弹铁蛋同学" }];
+    // 遍历数组的方法有太多，本文只枚举常用的几种
+    Array.prototype.flat = function (num = 1) {
+      if (!Number(num) || Number(num) < 0) {
+        return this;
+      }
+      let arr = this;    // 获得调用 fakeFlat 函数的数组
+      while (num > 0) {
+        if (arr.some(x => Array.isArray(x))) {
+          // arr = [].concat.apply([], arr);    // 数组中还有数组元素的话并且 num > 0，继续展开一层数组
+          arr = [].concat(...arr)
+          console.log(arr)
+        } else {
+          break; // 数组中没有数组元素并且不管 num 是否依旧大于 0，停止循环。
+        }
+        num--;
+      }
+      return arr;
+    }
+    console.log(arr.flat(2))
+    
+  </script>
+</body>
+
+</html>
