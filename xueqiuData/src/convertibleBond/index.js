@@ -8,26 +8,30 @@ const { fileDisplay, sortBy, writeXlsx } = require('../utils')
 const wencaiFile = fileDisplay(path.resolve(__dirname, './wencai/'))
 sortBy(wencaiFile, 'name', -1)
 const latestData = wencaiFile[0]
-let formData = xlsx.parse(latestData.path)[0].data
-sortConvertibleBond(formData)
+let latestFormData = xlsx.parse(latestData.path)[0].data
+console.log(latestData.name, '最新数据')
+sortConvertibleBond(latestFormData)
 
 
 if (wencaiFile[1]) {
-  // const oldData = wencaiFile[1]
-  // const oldFormData = xlsx.parse(oldData.path)[0].data
-  // console.log(oldFormData)
-  const wencaiFile = fileDisplay(path.resolve(__dirname, './wencai/'))
-  sortBy(wencaiFile, 'name', -1)
-  const latestData = wencaiFile[0]
-  const formData = xlsx.parse(latestData.path)[0].data
+  const oldData = wencaiFile[1]
+  const oldFormData = xlsx.parse(oldData.path)[0].data
+  console.log(oldData.name, '上次数据')
+  sortConvertibleBond(oldFormData)
+  const differencesInData = comparedata(latestFormData, oldFormData)
+  latestFormData.push(['新增转债', differencesInData.add.length])
+  latestFormData = [...latestFormData, ...differencesInData.add]
+  latestFormData.push(['移除转债', differencesInData.remove.length])
+  latestFormData = [...latestFormData, ...differencesInData.remove]
 }
 
 writeXlsx(
   latestData.name,
   path.resolve(__dirname, `./resFile/${latestData.name}`),
-  formData
+  latestFormData
 )
 
+// 按规则处理数据
 function sortConvertibleBond(formData) {
   formData.shift()
   // 到期日 升序 数值越小越好
@@ -64,6 +68,17 @@ function sortConvertibleBond(formData) {
   // 取前20项
   formData.splice(20, formData.length - 1)
   return formData
+}
+// 对比两组数据
+function comparedata(newData, oldData) {
+  const common = newData.filter(item => oldData.some($item => $item[0] === item[0]))
+  const add = newData.filter(item => !common.some($item => $item[0] === item[0]))
+  const remove = oldData.filter(item => !common.some($item => $item[0] === item[0]))
+  return {
+    common,
+    add,
+    remove,
+  }
 }
 
 
