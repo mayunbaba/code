@@ -1,4 +1,4 @@
-// https://www.iwencai.com/stockpick/search?typed=1&preParams=&ts=1&f=1&qs=result_rewrite&selfsectsn=&querytype=bond&searchfilter=&tid=stockpick&w=%E5%8F%AF%E8%BD%AC%E5%80%BA%EF%BC%8C%E5%88%B0%E6%9C%9F%E6%97%A5%EF%BC%8C%E6%BA%A2%E4%BB%B7%E7%8E%87%3C30%25%EF%BC%8C%E5%88%B0%E6%9C%9F%E6%94%B6%E7%9B%8A%E7%8E%87%3E0
+// https://www.iwencai.com/stockpick/search?typed=1&preParams=&ts=1&f=1&qs=result_rewrite&selfsectsn=&querytype=bond&searchfilter=&tid=stockpick&w=%E5%8F%AF%E8%BD%AC%E5%80%BA%EF%BC%8C%E5%88%B0%E6%9C%9F%E6%97%A5%EF%BC%8C%E6%BA%A2%E4%BB%B7%E7%8E%87%3C15%25%EF%BC%8C%E5%88%B0%E6%9C%9F%E6%94%B6%E7%9B%8A%E7%8E%87%3E0
 const path = require('path')
 const xlsx = require('node-xlsx')
 const fs = require('fs')
