@@ -31,8 +31,8 @@ export function initMixin(Vue) {
       let { template } = options
       if (!template && el) { // 没有template 取el作为模板
         template = el.outerHTML
-        let render = compileToFunction(template)
-        options.render = render
+        // let render = compileToFunction(template)
+        // options.render = render
       }
     }
   }

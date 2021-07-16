@@ -6,29 +6,38 @@ const { fileDisplay, sortBy, writeXlsx } = require('../utils')
 
 
 const wencaiFile = fileDisplay(path.resolve(__dirname, './wencai/'))
-sortBy(wencaiFile, 'name', -1)
-const latestData = wencaiFile[0]
-let latestFormData = xlsx.parse(latestData.path)[0].data
-console.log(latestData.name, '最新数据')
-sortConvertibleBond(latestFormData)
+// 待处理文件
+const fileNameArr = [
+  '2021-07-15.xls',
+  '2021-07-13.xls',
+]
+const dataArr = []
 
-
-if (wencaiFile[1]) {
-  const oldData = wencaiFile[1]
-  const oldFormData = xlsx.parse(oldData.path)[0].data
-  console.log(oldData.name, '上次数据')
-  sortConvertibleBond(oldFormData)
-  const differencesInData = comparedata(latestFormData, oldFormData)
-  latestFormData.push(['新增转债', differencesInData.add.length])
-  latestFormData = [...latestFormData, ...differencesInData.add]
-  latestFormData.push(['移除转债', differencesInData.remove.length])
-  latestFormData = [...latestFormData, ...differencesInData.remove]
+// 读取文件并写入excel
+fileNameArr.forEach(name => {
+  const { absPath } = wencaiFile[name]
+  const formData = xlsx.parse(absPath)[0].data
+  dataArr.push(sortConvertibleBond(formData))
+  writeXlsx(
+    name,
+    path.resolve(__dirname, `./resFile/${name}`),
+    formData
+  )
+})
+// 对比数据
+let contrast = {
+  name: `${fileNameArr[0]}-${fileNameArr[1]}`,
+  data: []
 }
-
+const differencesInData = comparedata(dataArr[0], dataArr[1])
+contrast.data.push(['新增转债', differencesInData.add.length])
+contrast.data = [...contrast.data, ...sortBy(differencesInData.add)]
+contrast.data.push(['移除转债', differencesInData.remove.length])
+contrast.data = [...contrast.data, ...sortBy(differencesInData.remove)]
 writeXlsx(
-  latestData.name,
-  path.resolve(__dirname, `./resFile/${latestData.name}`),
-  latestFormData
+  contrast.name,
+  path.resolve(__dirname, `./resFile/${contrast.name}`),
+  contrast.data
 )
 
 // 按规则处理数据

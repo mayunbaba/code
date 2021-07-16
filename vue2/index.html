@@ -26,7 +26,7 @@
       template: ''
     })
     // 递归调用defineProperty进行拦截，性能差 -> proxy
-    console.log(vm.b)
+    console.log(vm.b, 'vm')
     // vm._data.a.b = 100
     // 我们开发功能时很少对数据索引进行操作，为了性能考虑不对数组进行拦截
     // 拦截可以改变数组的方法进行操作 push shift pop unshift reserve sort splice

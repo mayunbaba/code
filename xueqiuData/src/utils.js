@@ -5,7 +5,7 @@ function fileDisplay(filePathOuter) {
   const path = require('path')
   const excludeFile = ['.DS_Store']
   // 根据文件路径读取文件，返回文件列表
-  const allFilesAbsolutePath = []
+  const allFilesAbsolutePath = {}
   function inner(filePath) {
     const files = fs.readdirSync(filePath)
     for (let i = 0; i < files.length; i++) {
@@ -17,10 +17,10 @@ function fileDisplay(filePathOuter) {
       const isFile = stats.isFile() // 是文件
       const isDir = stats.isDirectory() // 是文件夹
       if (isFile) {
-        allFilesAbsolutePath.push({
+        allFilesAbsolutePath[files[i]] = {
           name: files[i],
-          path: path.resolve(filePath, files[i])
-        })
+          absPath: path.resolve(filePath, files[i])
+        }
       }
       if (isDir) {
         inner(filedir)// 递归，如果是文件夹，就继续遍历该文件夹下面的文件
