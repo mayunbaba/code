@@ -7,6 +7,17 @@
   <title>前端监控SDK</title>
 </head>
 <body>
-  
+  <div>
+    <div id="container">
+      <div class="content">
+        <input type="button" value="点击抛出错误" onclick="errClick()" />
+      </div>
+    </div>
+  </div>
+  <script>
+    function errClick() {
+      window.a.b = 1
+    }
+  </script>
 </body>
 </html>
