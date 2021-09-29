@@ -5,19 +5,32 @@ import tracker from '../utils/tracker'
 export function injectJsError() {
   // 监听全局未捕获错误
   window.addEventListener('error', event => {
+    let log
     const lastEvent = getLastEvent() // 最后一个交互事件
-    const log = {
-      kind: 'stability', // 键控指标的大类
-      type: 'error', // 小类型 这是一个错误
-      errorType: 'jsError', // JS执行错误
-      message: event.message, // 报错信息
-      filename: event.filename, // 哪个文件报错
-      position: `${event.lineno}:${event.colno}`, // 报错位置
-      stack: getLines(event.error.stack),
-      selector: lastEvent ? getSelector(lastEvent.path) : '', // 代表最后一个操作的元素
+    if (event.target && (event.target.src || event.target.href)) {
+      // 脚本加载错误
+      log = {
+        kind: 'stability', // 键控指标的大类
+        type: 'error', // 小类型 这是一个错误
+        errorType: 'resourceError', // JS执行错误
+        filename: event.target.src || event.target.href, // 哪个文件报错
+        tagName: event.target.tagName,
+        selector: getSelector(event.target), // 代表最后一个操作的元素
+      }
+    } else {
+      log = {
+        kind: 'stability', // 键控指标的大类
+        type: 'error', // 小类型 这是一个错误
+        errorType: 'jsError', // JS执行错误
+        message: event.message, // 报错信息
+        filename: event.filename, // 哪个文件报错
+        position: `${event.lineno}:${event.colno}`, // 报错位置
+        stack: getLines(event.error.stack),
+        selector: lastEvent ? getSelector(lastEvent.path) : '', // 代表最后一个操作的元素
+      }
     }
     tracker.send(log)
-  })
+  }, true)
   // promise报错
   window.addEventListener('unhandledrejection', event => {
     const lastEvent = getLastEvent() // 最后一个交互事件
