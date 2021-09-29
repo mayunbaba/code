@@ -17,6 +17,8 @@
       </div>
       <!-- 图片代替 -->
       <img src="https://h5-test.fireflybao.com/app/img/head-pic-form.png" />
+      <input id="successBtn" type="button" value="ajax成功请求" onclick="sendSuccess()" />
+      <input id="errorBtn" type="button" value="ajax失败请求" onclick="sendError()" />
     </div>
   </div>
   <script>
@@ -30,6 +32,30 @@
       }).then(res => {
         console.log(res)
       })
+    }
+    function sendSuccess() {
+      const xhr = new XMLHttpRequest
+      xhr.open('GET', '/success', true)
+      xhr.responseType = 'json'
+      xhr.onload = function() {
+        console.log(xhr.response)
+      }
+      xhr.onerror = function(error) {
+        console.log(error)
+      }
+      xhr.send()
+    }
+    function sendError() {
+      const xhr = new XMLHttpRequest
+      xhr.open('POST', '/error', true)
+      xhr.responseType = 'json'
+      xhr.onload = function() {
+        console.log(xhr.response)
+      }
+      xhr.onerror = function(error) {
+        console.log(error)
+      }
+      xhr.send({name: 'weihua'})
     }
   </script>
 </body>

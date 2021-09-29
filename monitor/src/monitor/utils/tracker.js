@@ -9,7 +9,7 @@ function getExtraData() {
     title: document.title,
     url: location.href,
     timestamp: Date.now(),
-    userAgent: userAgent.parse(navigator.userAgent).name
+    userAgent: userAgent.parse(navigator.userAgent)
   }
 }
 
