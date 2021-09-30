@@ -45,10 +45,10 @@
       const xhr = new XMLHttpRequest
       xhr.open('GET', '/success', true)
       xhr.responseType = 'json'
-      xhr.onload = function() {
+      xhr.onload = function () {
         console.log(xhr.response)
       }
-      xhr.onerror = function(error) {
+      xhr.onerror = function (error) {
         console.log(error)
       }
       xhr.send()
@@ -57,19 +57,38 @@
       const xhr = new XMLHttpRequest
       xhr.open('POST', '/error', true)
       xhr.responseType = 'json'
-      xhr.onload = function() {
+      xhr.onload = function () {
         console.log(xhr.response)
       }
-      xhr.onerror = function(error) {
+      xhr.onerror = function (error) {
         console.log(error)
       }
-      xhr.send({name: 'weihua'})
+      xhr.send({ name: 'weihua' })
     }
   </script>
+  <!-- 白屏检测代码 -->
   <script>
     let content = document.getElementsByClassName('text')[0]
-    // content.innerHTML = '<span>@</span>'.repeat(1000)
+    content.innerHTML = '<span>@</span>'.repeat(1000)
   </script>
-  
+  <script>
+    // DOM解析完成，即使依赖的资源没有加载完成，也会触发这个事件
+    document.addEventListener('DOMContentLoaded', () => {
+      let start = Date.now()
+      while ((Date.now() - start) < 1000) { }
+      console.log('这里消耗时间为domContentLoadedTime')
+    })
+  </script>
+  <!-- fmp首次有意义绘制 elementtiming="meaningful" 必须添加此属性 -->
+  <script>
+    setTimeout(() => {
+      let content = document.getElementsByClassName('content')[0];
+      let h1 = document.createElement('h1');
+      h1.innerHTML = '我是这个页面中最有意义的内容';
+      h1.setAttribute('elementtiming', 'meaningful');
+      // content.appendChild(h1);
+    }, 2000);
+  </script>
 </body>
+
 </html>
