@@ -1,11 +1,11 @@
 import tracker from "../utils/tracker";
-
+// fetch原来不同未监听
 export function injectXHR() {
   let XMLHttpRequest = window.XMLHttpRequest
   const oldOpen = XMLHttpRequest.prototype.open
   XMLHttpRequest.prototype.open = function(method, url, async) {
     // 通过logstores 避免监听日志
-    if (!url.match(/logstores/)) {
+    if (!url.match(/logstores/) && !url.match(/sockjs/)) {
       this.logData = {
         method,
         url,

@@ -5,7 +5,7 @@ function getSelectors(path) {
     if (element.id) {
       return `${element.nodeName.toLowerCase()}#${element.id}`
     } else if (element.className && typeof element.className === 'string') {
-      return `${element.nodeName.toLowerCase()}#${element.className}`
+      return `${element.nodeName.toLowerCase()}.${element.className}`
     } else {
       return element.nodeName.toLowerCase()
     }

@@ -6,6 +6,12 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>前端监控SDK</title>
+  <style>
+    .text {
+      display: flex;
+      flex-wrap: wrap;
+    }
+  </style>
 </head>
 
 <body>
@@ -16,11 +22,13 @@
         <input type="button" value="点击抛出promise错误" onclick="promiseErrClick()" />
       </div>
       <!-- 图片代替 -->
-      <img src="https://h5-test.fireflybao.com/app/img/head-pic-form.png" />
+      <!-- <img src="https://h5-test.fireflybao.com/app/img/head-pic-form.png" alt="图片加载失败报错" /> -->
       <input id="successBtn" type="button" value="ajax成功请求" onclick="sendSuccess()" />
       <input id="errorBtn" type="button" value="ajax失败请求" onclick="sendError()" />
+      <div class="text"></div>
     </div>
   </div>
+  <!-- js报错 promise报错 -->
   <script>
     function errClick() {
       window.some.error = 'err'
@@ -58,5 +66,10 @@
       xhr.send({name: 'weihua'})
     }
   </script>
+  <script>
+    let content = document.getElementsByClassName('text')[0]
+    // content.innerHTML = '<span>@</span>'.repeat(1000)
+  </script>
+  
 </body>
 </html>
