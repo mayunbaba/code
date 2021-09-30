@@ -1,5 +1,5 @@
 import tracker from "../utils/tracker";
-// fetch原来不同未监听
+// fetch原理不同未监听
 export function injectXHR() {
   let XMLHttpRequest = window.XMLHttpRequest
   const oldOpen = XMLHttpRequest.prototype.open
