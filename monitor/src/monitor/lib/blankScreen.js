@@ -23,11 +23,11 @@ export function blankScreen() {
     for(let i = 1; i <= 9; i++) {
       // 屏幕中间9个点
       const xElements = document.elementsFromPoint(
-        window.innerWidth*i/10, window.innerHeight/2
+        window.innerWidth/10*i, window.innerHeight/2
       )
       // xElements 返回示例 [span, div.text, div#container, div, body, html]
       const yElements = document.elementsFromPoint(
-        window.innerWidth/2, window.innerHeight*i/10
+        window.innerWidth/2, window.innerHeight/10*i
       )
       isWrapper(xElements[0])
       isWrapper(yElements[0])
