@@ -10,6 +10,7 @@ module.exports = {
     filename: 'monitor.js'
   },
   devServer: {
+    open: true,
     contentBase: path.resolve(__dirname, 'dist'), // 静态文件根目录
     // before用来配置路由
     before(router) {
