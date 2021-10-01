@@ -1,8 +1,11 @@
+import SlsWebLogger from 'js-sls-logger'
+
 let userAgent = require('user-agent')
 
 let host = 'cn-beijing.log.aliyuncs.com'
 let project = 'zhimeng-h5'
 let logstore = 'h5-dev'
+let time = 5 // 5S上报一次
 
 function getExtraData() {
   return {
@@ -15,8 +18,12 @@ function getExtraData() {
 
 class SendTracker {
   constructor() {
-    this.url = `https://${project}.${host}/logstores/${logstore}/track` // 上报路径
-    this.xhr = new XMLHttpRequest
+    this.logger = new SlsWebLogger({
+      host,      
+      project,
+      logstore,
+      time,
+    })
   }
   send(data = {}) {
     const extraData = getExtraData()
@@ -30,15 +37,7 @@ class SendTracker {
         log[key] = JSON.stringify(log[key])
       }
     }
-    const body = JSON.stringify({
-      __logs__: [log]
-    })
-    this.xhr.open('POST', this.url, true)
-    this.xhr.setRequestHeader('Content-Type', 'application/json') // 请求体类型
-    this.xhr.setRequestHeader('x-log-apiversion', '0.6.0') // 版本号
-    this.xhr.setRequestHeader('x-log-bodyrawsize', body.length) // 请求体的大小
-    console.log(log)
-    this.xhr.send(body)
+    this.logger.send(log)
   }
 }
 export default new SendTracker()
