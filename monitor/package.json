@@ -13,9 +13,12 @@
   "license": "ISC",
   "devDependencies": {
     "html-webpack-plugin": "^5.3.1",
-    "user-agent": "^1.0.4",
     "webpack": "^5.37.0",
     "webpack-cli": "^3.3.12",
     "webpack-dev-server": "^3.11.2"
+  },
+  "dependencies": {
+    "user-agent": "^1.0.4",
+    "js-sls-logger": "^2.0.0-beta.2"
   }
 }
